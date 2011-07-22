@@ -3831,9 +3831,9 @@
 
 		$res = trim($str); if (!$res) return '';
 
-//		if (get_pref($link, "STRIP_UNSAFE_TAGS", $owner) || $force_strip_tags) {
-		$res = $purifier->purify($res);
-//		}
+		if (get_pref($link, "STRIP_UNSAFE_TAGS", $owner) || $force_strip_tags) {
+			$res = $purifier->purify($res);
+		}
 
 		if (get_pref($link, "STRIP_IMAGES", $owner)) {
 			$res = preg_replace('/<img[^>]+>/is', '', $res);
@@ -5321,8 +5321,13 @@
 						title=\"".htmlspecialchars($line['title'])."\"
 						target=\"_blank\" href=\"".
 						htmlspecialchars($line["link"])."\">".
-						truncate_string($line["title"], 100) .
-						" $entry_author</a>";
+						truncate_string($line["title"], 100);
+
+                                        if (!get_pref($link, "VFEED_GROUP_BY_FEED") && $line["feed_title"]) {
+                                                $reply['content'] .= " (".htmlspecialchars($line["feed_title"]).")";
+                                        }
+
+					$reply['content'] .= " $entry_author</a>";
 
 					$reply['content'] .= $labels_str;
 
@@ -7035,7 +7040,7 @@
 			$rv .= "<div class=\"postEnclosures\">";
 
 			if (!get_pref($link, "STRIP_IMAGES")) {
-				if ($always_display_enclosures ||
+				if ( $always_display_enclosures ||
 							!preg_match("/<img/i", $article_content)) {
 
 					foreach ($entries as $entry) {

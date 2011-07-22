@@ -445,8 +445,13 @@ function moveToPost(mode) {
 		 	if (next_id) {
 				if (isCdmMode()) {
 
-					cdmExpandArticle(next_id);
-					cdmScrollToArticleId(next_id);
+					if (!cdmArticleIsActuallyVisible(next_id)) {
+						cdmScrollToArticleId(next_id);
+					}
+					cdmSelectArticles("none");
+					toggleUnread(next_id, 0, true);
+					toggleSelected(next_id);
+					active_post_id = next_id;
 
 				} else {
 					correctHeadlinesOffset(next_id);
@@ -458,8 +463,13 @@ function moveToPost(mode) {
 		if (mode == "prev") {
 			if (prev_id) {
 				if (isCdmMode()) {
-					cdmExpandArticle(prev_id);
-					cdmScrollToArticleId(prev_id);
+					if (!cdmArticleIsActuallyVisible(prev_id)) {
+						cdmScrollToArticleId(prev_id);
+					}
+					cdmSelectArticles("none");
+					toggleUnread(prev_id, 0, true);
+					toggleSelected(prev_id);
+					active_post_id = prev_id;
 				} else {
 					correctHeadlinesOffset(prev_id);
 					view(prev_id, getActiveFeedId());
@@ -512,7 +522,7 @@ function toggleUnread(id, cmode, effect) {
 				if (row.hasClassName("Unread")) {
 					row.removeClassName("Unread");
 
-					if (effect) {
+					if (false) {
 						new Effect.Highlight(row, {duration: 1, startcolor: "#fff7d5",
 							afterFinish: toggleUnread_afh,
 							queue: { position:'end', scope: 'TMRQ-' + id, limit: 1 } } );
@@ -526,7 +536,7 @@ function toggleUnread(id, cmode, effect) {
 
 				row.removeClassName("Unread");
 
-				if (effect) {
+				if (false) {
 					new Effect.Highlight(row, {duration: 1, startcolor: "#fff7d5",
 						afterFinish: toggleUnread_afh,
 						queue: { position:'end', scope: 'TMRQ-' + id, limit: 1 } } );
@@ -1029,6 +1039,67 @@ function cdmScrollToArticleId(id) {
 
 	} catch (e) {
 		exception_error("cdmScrollToArticleId", e);
+	}
+}
+
+
+function cdmArticleIsActuallyVisible(id) {
+	try {
+		var ctr = $("headlines-frame");
+		var e = $("RROW-" + id);
+
+		if (!e || !ctr) return;
+
+		// article fits in viewport OR article is longer than viewport and
+		// its bottom is visible
+
+		if (ctr.scrollTop <= e.offsetTop && e.offsetTop + e.offsetHeight <=
+				ctr.scrollTop + ctr.offsetHeight) {
+
+			return true;
+		
+		} else if (e.offsetHeight > ctr.offsetHeight &&
+				e.offsetTop + e.offsetHeight >= ctr.scrollTop &&
+				e.offsetTop + e.offsetHeight <= ctr.scrollTop + ctr.offsetHeight) {
+
+			return true;
+
+		}
+
+		return false;
+
+	} catch (e) {
+		exception_error("cdmArticleIsVisible", e);
+	}
+}
+
+// mode = all,none,unread
+function cdmSelectArticles(mode) {
+	var container = $("headlines-frame");
+
+	for (i = 0; i < container.childNodes.length; i++) {
+		var child = container.childNodes[i];
+
+		if (child.id && child.id.match("RROW-")) {
+			var aid = child.id.replace("RROW-", "");
+
+			var cb = $("RCHK-" + aid);
+
+			if (mode == "all") {
+				if (!child.className.match("Selected")) {
+					child.className = child.className + "Selected";
+					cb.checked = true;
+				}
+			} else if (mode == "unread") {
+				if (child.className.match("Unread") && !child.className.match("Selected")) {
+					child.className = child.className + "Selected";
+					cb.checked = true;
+				}
+			} else {
+				child.className = child.className.replace("Selected", "");
+				cb.checked = false;
+			}
+		}		
 	}
 }
 
