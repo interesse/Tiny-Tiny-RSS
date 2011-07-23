@@ -722,12 +722,12 @@ function hotkey_handler(e) {
 				return;
 			}
 
-			if (shift_key && keycode == 78) { // N
+			if (shift_key && keycode == 78 || keycode == 40 ) { // N, down
 				scrollArticle(50);
 				return;
 			}
 
-			if (shift_key && keycode == 80) { // P
+			if (shift_key && keycode == 80 || keycode == 38 ) { // P, up
 				scrollArticle(-50);
 				return;
 			}
@@ -742,14 +742,14 @@ function hotkey_handler(e) {
 				return;
 			}
 
-			if (keycode == 78 || keycode == 40) { // n, down
+			if (keycode == 78 ) { // n
 				if (typeof moveToPost != 'undefined') {
 					moveToPost('next');
 					return false;
 				}
 			}
 
-			if (keycode == 80 || keycode == 38) { // p, up
+			if (keycode == 80) { // p
 				if (typeof moveToPost != 'undefined') {
 					moveToPost('prev');
 					return false;
