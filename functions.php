@@ -3888,7 +3888,7 @@
 
 		$node = $doc->getElementsByTagName('body')->item(0);
 
-		return $doc->saveXML($node);
+		return $doc->saveXML($node, LIBXML_NOEMPTYTAG);
 	}
 
 	/**
