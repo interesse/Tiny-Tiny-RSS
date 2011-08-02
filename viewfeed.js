@@ -445,14 +445,13 @@ function moveToPost(mode) {
 		 	if (next_id) {
 				if (isCdmMode()) {
 
+					cdmExpandArticle(next_id);
 					if (!cdmArticleIsActuallyVisible(next_id)) {
 						cdmScrollToArticleId(next_id);
 					}
-					cdmSelectArticles("none");
-					toggleUnread(next_id, 0, true);
-					toggleSelected(next_id);
-					active_post_id = next_id;
-
+					var next_elem = $('RROW-' + next_id);
+					next_elem.setAttribute("tabindex", -1);
+					next_elem.focus();
 				} else {
 					correctHeadlinesOffset(next_id);
 					view(next_id, getActiveFeedId());
@@ -463,13 +462,13 @@ function moveToPost(mode) {
 		if (mode == "prev") {
 			if (prev_id) {
 				if (isCdmMode()) {
+					cdmExpandArticle(prev_id);
 					if (!cdmArticleIsActuallyVisible(prev_id)) {
 						cdmScrollToArticleId(prev_id);
 					}
-					cdmSelectArticles("none");
-					toggleUnread(prev_id, 0, true);
-					toggleSelected(prev_id);
-					active_post_id = prev_id;
+					var pref_elem = $('RROW-' + pref_id);
+                                        pref_elem.setAttribute("tabindex", -1);
+                                        pref_elem.focus();
 				} else {
 					correctHeadlinesOffset(prev_id);
 					view(prev_id, getActiveFeedId());
