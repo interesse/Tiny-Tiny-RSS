@@ -466,9 +466,9 @@ function moveToPost(mode) {
 					if (!cdmArticleIsActuallyVisible(prev_id)) {
 						cdmScrollToArticleId(prev_id);
 					}
-					var pref_elem = $('RROW-' + pref_id);
-                                        pref_elem.setAttribute("tabindex", -1);
-                                        pref_elem.focus();
+					var prev_elem = $('RROW-' + prev_id);
+                                        prev_elem.setAttribute("tabindex", -1);
+                                        prev_elem.focus();
 				} else {
 					correctHeadlinesOffset(prev_id);
 					view(prev_id, getActiveFeedId());
